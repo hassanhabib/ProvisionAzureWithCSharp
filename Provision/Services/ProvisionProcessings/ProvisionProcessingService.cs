@@ -4,6 +4,7 @@ using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.Azure.Management.Sql.Fluent;
 using Provision.Brokers.Configurations;
 using Provision.Models.Configurations;
+using Provision.Models.Storages;
 using Provision.Services.Provisions;
 
 namespace Provision.Services.ProvisionProcessings
@@ -34,14 +35,19 @@ namespace Provision.Services.ProvisionProcessings
                 IAppServicePlan appServicePlan = await this.provisionService
                     .CreatePlanAsync(projectName, environment, resourceGroup);
 
-                IWebApp webApp = await this.provisionService
-                    .CreateWebAppAsync(projectName, environment, resourceGroup, appServicePlan);
-
                 ISqlServer sqlServer = await this.provisionService
                     .CreateSqlServerAsync(projectName, environment, resourceGroup);
 
-                ISqlDatabase sqlDatabase = await this.provisionService
+                SqlDatabase sqlDatabase = await this.provisionService
                     .CreateSqlDatabaseAsync(projectName, environment, sqlServer);
+
+                IWebApp webApp = await this.provisionService
+                    .CreateWebAppAsync(
+                        projectName, 
+                        environment,
+                        sqlDatabase.ConnectionString,
+                        resourceGroup, 
+                        appServicePlan);
             }
         }
     }

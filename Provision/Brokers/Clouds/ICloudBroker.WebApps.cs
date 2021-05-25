@@ -7,7 +7,8 @@ namespace Provision.Brokers.Clouds
     public partial interface ICloudBroker
     {
         ValueTask<IWebApp> CreateWebAppAsync(
-            string webAppName, 
+            string webAppName,
+            string databaseConnectionString,
             IAppServicePlan plan, 
             IResourceGroup resourceGroup);
     }

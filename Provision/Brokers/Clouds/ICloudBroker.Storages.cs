@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.Azure.Management.Sql.Fluent;
+using Provision.Models.Storages;
 
 namespace Provision.Brokers.Clouds
 {
@@ -8,5 +9,6 @@ namespace Provision.Brokers.Clouds
     {
         ValueTask<ISqlServer> CreateSqlServerAsync(string sqlServerName, IResourceGroup resourceGroup);
         ValueTask<ISqlDatabase> CreateSqlDatabaseAsync(string sqlDatabaseName, ISqlServer sqlServer);
+        SqlDatabaseAccess GetAdminAccess();
     }
 }

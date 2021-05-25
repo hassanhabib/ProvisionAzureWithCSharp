@@ -4,6 +4,7 @@ using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.Azure.Management.Sql.Fluent;
 using Provision.Brokers.Clouds;
 using Provision.Brokers.Loggings;
+using Provision.Models.Storages;
 
 namespace Provision.Services.Provisions
 {
@@ -18,7 +19,7 @@ namespace Provision.Services.Provisions
             this.loggingBroker = new LoggingBroker();
         }
 
-        public async ValueTask<ISqlDatabase> CreateSqlDatabaseAsync(
+        public async ValueTask<SqlDatabase> CreateSqlDatabaseAsync(
             string projectName,
             string environment,
             ISqlServer sqlServer)
@@ -31,7 +32,11 @@ namespace Provision.Services.Provisions
 
             this.loggingBroker.LogActivity($"{sqlDatabaseName} Created");
 
-            return sqlDatabase;
+            return new SqlDatabase
+            {
+                Database = sqlDatabase,
+                ConnectionString = GenerateConnectionString(sqlDatabase)
+            };
         }
 
         public async ValueTask<ISqlServer> CreateSqlServerAsync(
@@ -53,6 +58,7 @@ namespace Provision.Services.Provisions
         public async ValueTask<IWebApp> CreateWebAppAsync(
             string projectName,
             string environment,
+            string databaseConnectionString,
             IResourceGroup resourceGroup,
             IAppServicePlan appServicePlan)
         {
@@ -60,7 +66,11 @@ namespace Provision.Services.Provisions
             this.loggingBroker.LogActivity($"Creating {webAppName} ...");
 
             IWebApp webApp = await this.cloudBroker
-                .CreateWebAppAsync(webAppName, appServicePlan, resourceGroup);
+                .CreateWebAppAsync(
+                    webAppName,
+                    databaseConnectionString, 
+                    appServicePlan, 
+                    resourceGroup);
 
             this.loggingBroker.LogActivity($"{webAppName} Created");
 
@@ -96,6 +106,16 @@ namespace Provision.Services.Provisions
             this.loggingBroker.LogActivity($"{resourceGroupName} Created");
 
             return resourceGroup;
+        }
+
+        private string GenerateConnectionString(ISqlDatabase sqlDatabase)
+        {
+            SqlDatabaseAccess access = this.cloudBroker.GetAdminAccess();
+
+            return $"Server=tcp:{sqlDatabase.SqlServerName}.database.windows.net,1433;" +
+                $"Initial Catalog=kamonz-db-dev;" +
+                $"User ID={access.AdminName};" +
+                $"Password={access.AdminAccess};";
         }
     }
 }

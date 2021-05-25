@@ -2,6 +2,7 @@
 using Microsoft.Azure.Management.AppService.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.Azure.Management.Sql.Fluent;
+using Provision.Models.Storages;
 
 namespace Provision.Services.Provisions
 {
@@ -19,6 +20,7 @@ namespace Provision.Services.Provisions
         ValueTask<IWebApp> CreateWebAppAsync(
             string projectName,
             string environment,
+            string databaseConnectionString,
             IResourceGroup resourceGroup,
             IAppServicePlan appServicePlan);
 
@@ -27,7 +29,7 @@ namespace Provision.Services.Provisions
             string environment,
             IResourceGroup resourceGroup);
 
-        ValueTask<ISqlDatabase> CreateSqlDatabaseAsync(
+        ValueTask<SqlDatabase> CreateSqlDatabaseAsync(
             string projectName,
             string environment,
             ISqlServer sqlServer);
