@@ -113,7 +113,7 @@ namespace Provision.Services.Provisions
             SqlDatabaseAccess access = this.cloudBroker.GetAdminAccess();
 
             return $"Server=tcp:{sqlDatabase.SqlServerName}.database.windows.net,1433;" +
-                $"Initial Catalog=kamonz-db-dev;" +
+                $"Initial Catalog={sqlDatabase.Name};" +
                 $"User ID={access.AdminName};" +
                 $"Password={access.AdminAccess};";
         }
