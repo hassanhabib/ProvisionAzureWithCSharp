@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Azure.Management.AppService.Fluent;
+using Microsoft.Azure.Management.AppService.Fluent.Models;
 using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.Azure.Management.Sql.Fluent;
 using Provision.Models.Storages;
@@ -33,5 +34,10 @@ namespace Provision.Services.Provisions
             string projectName,
             string environment,
             ISqlServer sqlServer);
+
+        ValueTask<SiteExtensionInfoInner> InstallSiteExtensionAsync(
+            IResourceGroup resourceGroup,
+            IWebApp webApp,
+            string extensionName);
     }
 }

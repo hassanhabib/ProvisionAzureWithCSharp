@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Azure.Management.AppService.Fluent;
+using Microsoft.Azure.Management.AppService.Fluent.Models;
 using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.Azure.Management.Sql.Fluent;
 using Provision.Brokers.Clouds;
@@ -116,6 +117,17 @@ namespace Provision.Services.Provisions
                 $"Initial Catalog={sqlDatabase.Name};" +
                 $"User ID={access.AdminName};" +
                 $"Password={access.AdminAccess};";
+        }
+
+        public async ValueTask<SiteExtensionInfoInner> InstallSiteExtensionAsync(
+            IResourceGroup resourceGroup, 
+            IWebApp webApp, 
+            string extensionName)
+        {
+            return await this.cloudBroker.InstallExtensionAsync(
+                resourceGroupName: resourceGroup.Name,
+                siteName: webApp.Name,
+                extensionName);
         }
     }
 }

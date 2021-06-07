@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Azure.Management.AppService.Fluent;
+using Microsoft.Azure.Management.AppService.Fluent.Models;
 using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.Azure.Management.Sql.Fluent;
 using Provision.Brokers.Configurations;
@@ -48,6 +49,12 @@ namespace Provision.Services.ProvisionProcessings
                         sqlDatabase.ConnectionString,
                         resourceGroup, 
                         appServicePlan);
+
+                SiteExtensionInfoInner siteExtensionInfoInner = await this.provisionService
+                    .InstallSiteExtensionAsync(
+                        resourceGroup,
+                        webApp,
+                        extensionName: "AspNetCoreRuntime.6.0.x86");
             }
         }
     }
